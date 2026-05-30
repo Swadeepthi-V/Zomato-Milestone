@@ -5,15 +5,15 @@
   "rewrites": [
     {
       "source": "/recommend",
-      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/recommend"
+      "destination": "https://web-production-adf54.up.railway.app/recommend"
     },
     {
       "source": "/locations",
-      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/locations"
+      "destination": "https://web-production-adf54.up.railway.app/locations"
     },
     {
       "source": "/health",
-      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/health"
+      "destination": "https://web-production-adf54.up.railway.app/health"
     }
   ]
 }
