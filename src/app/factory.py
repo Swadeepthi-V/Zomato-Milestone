@@ -71,6 +71,10 @@ def create_app(
     application.mount("/static", StaticFiles(directory=static_dir), name="static")
 
     application.include_router(router)
+
+    # Mount root static files last so they act as a fallback for relative style.css / app.js
+    application.mount("/", StaticFiles(directory=static_dir, html=True), name="root_static")
+
     return application
 
 
