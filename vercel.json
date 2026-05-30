@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/recommend",
+      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/recommend"
+    },
+    {
+      "source": "/locations",
+      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/locations"
+    },
+    {
+      "source": "/health",
+      "destination": "https://YOUR-RAILWAY-APP-URL.up.railway.app/health"
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content=" gourmet AI-powered restaurant recommendations combining Zomato dataset with Groq LLM reasoning.">
+    <title>CulinaryMind — AI Gourmet Restaurant Recommendations</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Gradient Background Highlights -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-utensils logo-icon"></i>
+                <span class="logo-text">Culinary<span class="logo-highlight">Mind</span></span>
+            </div>
+            <div class="header-badge">
+                <i class="fa-solid fa-microchip"></i>
+                <span>Grounded RAG Pipeline</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Gourmet AI <br><span class="text-gradient">Recommendations</span></h1>
+            <p class="hero-subtitle">Discover real restaurants backed by the Zomato dataset, ranked and explained with deep reasoning by Groq intelligence.</p>
+        </section>
+
+        <!-- Dynamic Content Grid -->
+        <div class="dashboard-grid">
+            <!-- Sidebar controls -->
+            <aside class="controls-panel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-sliders"></i> Taste Preferences</h2>
+                    <button type="button" id="reset-btn" class="text-btn">Clear All</button>
+                </div>
+
+                <form id="recommendation-form" class="preferences-form">
+                    <!-- Location Field -->
+                    <div class="form-group">
+                        <label for="location-input"><i class="fa-solid fa-location-dot"></i> Location <span class="required">*</span></label>
+                        <select id="location-input" name="location" required>
+                            <option value="" disabled selected>Select a location...</option>
+                        </select>
+                    </div>
+
+                    <!-- Budget Selector -->
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-wallet"></i> Budget Tier <span class="required">*</span></label>
+                        <div class="budget-selector">
+                            <input type="radio" id="budget-low" name="budget" value="low">
+                            <label for="budget-low" class="budget-btn">
+                                <span class="tier-label">Low</span>
+                                <span class="tier-symbol">₹</span>
+                            </label>
+
+                            <input type="radio" id="budget-medium" name="budget" value="medium" checked>
+                            <label for="budget-medium" class="budget-btn">
+                                <span class="tier-label">Medium</span>
+                                <span class="tier-symbol">₹₹</span>
+                            </label>
+
+                            <input type="radio" id="budget-high" name="budget" value="high">
+                            <label for="budget-high" class="budget-btn">
+                                <span class="tier-label">High</span>
+                                <span class="tier-symbol">₹₹₹</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cuisine Field -->
+                    <div class="form-group">
+                        <label for="cuisine-input"><i class="fa-solid fa-bowl-food"></i> Cuisine Type</label>
+                        <input type="text" id="cuisine-input" name="cuisine" placeholder="e.g., Italian, Chinese, North Indian" autocomplete="off">
+                    </div>
+
+                    <!-- Min Rating Slider -->
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="rating-input"><i class="fa-solid fa-star"></i> Minimum Rating</label>
+                            <span id="rating-val" class="slider-badge">4.0</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="rating-input" name="min_rating" min="0.0" max="5.0" step="0.1" value="4.0">
+                        </div>
+                    </div>
+
+                    <!-- Additional Preferences Textarea -->
+                    <div class="form-group">
+                        <label for="additional-input"><i class="fa-solid fa-wand-magic-sparkles"></i> Additional Constraints</label>
+                        <textarea id="additional-input" name="additional_preferences" placeholder="e.g. rooftop seating, fine dining, family-friendly, quick service, romantic ambience..." rows="3"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-btn" class="submit-btn">
+                        <span>Curate Selection</span>
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                    </button>
+                </form>
+            </aside>
+
+            <!-- Results Panel -->
+            <section class="results-panel">
+                <!-- Presets Section -->
+                <div class="presets-container" id="presets-panel">
+                    <h3 class="section-title"><i class="fa-solid fa-compass"></i> Popular Gastronomic Explorations</h3>
+                    <div class="presets-grid">
+                        <div class="preset-card" data-preset="1">
+                            <div class="preset-icon"><i class="fa-solid fa-pizza-slice"></i></div>
+                            <h4>Gourmet Italian</h4>
+                            <p>Bangalore • Medium budget • 4.0+ rating • Italian cuisine with a fine dining feel</p>
+                        </div>
+                        <div class="preset-card" data-preset="2">
+                            <div class="preset-icon"><i class="fa-solid fa-fire"></i></div>
+                            <h4>Spicy street eats</h4>
+                            <p>Delhi • Low budget • 3.8+ rating • Street Food, North Indian</p>
+                        </div>
+                        <div class="preset-card" data-preset="3">
+                            <div class="preset-icon"><i class="fa-solid fa-glass-water"></i></div>
+                            <h4>Premium Rooftop</h4>
+                            <p>Mumbai • High budget • 4.2+ rating • Continental, beautiful rooftop dining</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Filter Tags Display -->
+                <div class="filters-display hidden" id="filters-summary">
+                    <span class="active-badge"><i class="fa-solid fa-location-dot"></i> <span id="tag-location">-</span></span>
+                    <span class="active-badge"><i class="fa-solid fa-wallet"></i> <span id="tag-budget">-</span></span>
+                    <span class="active-badge" id="tag-cuisine-wrapper"><i class="fa-solid fa-bowl-food"></i> <span id="tag-cuisine">-</span></span>
+                    <span class="active-badge" id="tag-rating-wrapper"><i class="fa-solid fa-star"></i> <span id="tag-rating">-</span></span>
+                </div>
+
+                <!-- Loading State (Skeleton Loaders) -->
+                <div class="loading-state hidden" id="loading-state">
+                    <div class="loading-header">
+                        <div class="spinner"></div>
+                        <div class="loading-progress">
+                            <h3 id="loading-stage-title">Retrieving candidate list...</h3>
+                            <p id="loading-stage-desc">Scanning Zomato record catalog</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Pulsing Skeletons -->
+                    <div class="skeleton-summary"></div>
+                    <div class="skeleton-grid">
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+                </div>
+
+                <!-- Results Output -->
+                <div class="results-output hidden" id="results-output">
+                    <!-- LLM Summary Box -->
+                    <div class="summary-box hidden" id="selection-summary-container">
+                        <div class="summary-icon"><i class="fa-solid fa-quote-left"></i></div>
+                        <div class="summary-text">
+                            <h3>Curated Overview</h3>
+                            <p id="selection-summary">Summarizing your recommendations...</p>
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Count Header -->
+                    <div class="results-header">
+                        <h3>Recommendations curated just for you</h3>
+                        <span id="results-meta-badge" class="meta-badge">5 matching</span>
+                    </div>
+
+                    <!-- Grid list of restaurants -->
+                    <div class="recommendations-grid" id="recommendations-grid"></div>
+
+                    <!-- Performance latency & models footer metadata -->
+                    <footer class="results-metadata">
+                        <span id="meta-engine"><i class="fa-solid fa-microchip"></i> Engine: -</span>
+                        <span id="meta-candidates"><i class="fa-solid fa-database"></i> Candidates parsed: -</span>
+                        <span id="meta-latency"><i class="fa-solid fa-stopwatch"></i> Latency: -</span>
+                    </footer>
+                </div>
+
+                <!-- Empty State View -->
+                <div class="empty-state hidden" id="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <h3>No Culinary Matches Found</h3>
+                    <p id="empty-state-message">Broaden your filters (e.g. increase location reach, change cuisine type, or select a different budget level) to retrieve dining options.</p>
+                    <button type="button" class="btn btn-secondary" id="empty-reset-btn">Reset Filters</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 Zomato AI Recommendation Service. Ingested from real restaurant records.</p>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
