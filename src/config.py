@@ -18,7 +18,7 @@ DEFAULT_CACHE_PATH = DATA_DIR / "restaurants.parquet"
 HF_DATASET_NAME = os.getenv(
     "HF_DATASET_NAME", "ManikaSaini/zomato-restaurant-recommendation"
 )
-HF_DATASET_SPLIT = os.getenv("HF_DATASET_SPLIT", "train")
+HF_DATASET_SPLIT = os.getenv("HF_DATASET_SPLIT", "train[:15000]")
 DATA_CACHE_PATH = Path(os.getenv("DATA_CACHE_PATH", str(DEFAULT_CACHE_PATH)))
 
 # Recommendation
