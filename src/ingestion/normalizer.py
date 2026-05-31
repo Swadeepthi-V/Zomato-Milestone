@@ -97,9 +97,19 @@ def _normalize_row(
     if not name:
         return None, "missing_name"
 
-    location = _extract_city(row.get("address"), row.get("location"))
-    if not location:
+    # Skip records that have completely missing location and address fields
+    raw_addr = _clean_str(row.get("address"))
+    raw_loc = _clean_str(row.get("location"))
+    if not raw_addr and not raw_loc:
         return None, "missing_location"
+
+    # Explicitly set City to 'Hyderabad' or 'Bangalore' to prevent neighborhood leakage
+    address = raw_addr or ""
+    url = _clean_str(row.get("url")) or ""
+    if "hyderabad" in address.lower() or "hyderabad" in url.lower():
+        location = "Hyderabad"
+    else:
+        location = "Bangalore"
 
     cuisine = _clean_str(row.get("cuisines")) or "Unknown"
     cost_raw = _clean_str(row.get("approx_cost(for two people)"))
