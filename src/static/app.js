@@ -42,7 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Dynamic Locations Data (populated on load from backend)
     let popularLocations = [
         "Bangalore", "Delhi", "Mumbai", "Kolkata", "Chennai",
-        "Hyderabad", "Pune", "Noida", "Gurgaon", "New Delhi"
+        "Hyderabad", "Pune", "Noida", "Gurgaon", "New Delhi",
+        "Bellandur", "Bachupally", "Madhapur", "Miyapur", "Indiranagar", "Suchitra"
     ];
 
     async function loadUniqueLocations() {
