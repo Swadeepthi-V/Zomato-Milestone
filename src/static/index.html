@@ -50,11 +50,19 @@
                 </div>
 
                 <form id="recommendation-form" class="preferences-form">
-                    <!-- Location Field -->
+                    <!-- City Selection Field -->
                     <div class="form-group">
-                        <label for="location-input"><i class="fa-solid fa-location-dot"></i> Location <span class="required">*</span></label>
-                        <select id="location-input" name="location" required>
-                            <option value="" disabled selected>Select a location...</option>
+                        <label for="city-input"><i class="fa-solid fa-city"></i> Metro City <span class="required">*</span></label>
+                        <select id="city-input" name="city" required>
+                            <option value="" disabled selected>Select a city...</option>
+                        </select>
+                    </div>
+
+                    <!-- Area Selection Field (dynamic) -->
+                    <div class="form-group">
+                        <label for="location-input"><i class="fa-solid fa-location-dot"></i> Neighborhood / Area <span class="required">*</span></label>
+                        <select id="location-input" name="location" required disabled>
+                            <option value="" disabled selected>Select a city first...</option>
                         </select>
                     </div>
 

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // DOM Cache
     const form = document.getElementById("recommendation-form");
     const locationInput = document.getElementById("location-input");
+    const cityInput = document.getElementById("city-input");
     const cuisineInput = document.getElementById("cuisine-input");
     const ratingInput = document.getElementById("rating-input");
     const ratingVal = document.getElementById("rating-val");
@@ -39,38 +40,66 @@ document.addEventListener("DOMContentLoaded", () => {
     const tagRating = document.getElementById("tag-rating");
     const tagRatingWrapper = document.getElementById("tag-rating-wrapper");
 
-    // Dynamic Locations Data (populated on load from backend)
-    let popularLocations = [
-        "Bangalore", "Delhi", "Mumbai", "Kolkata", "Chennai",
-        "Hyderabad", "Pune", "Noida", "Gurgaon", "New Delhi",
-        "Bellandur", "Bachupally", "Madhapur", "Miyapur", "Indiranagar", "Suchitra"
-    ];
+    // Dynamic City-Areas mapping (with premium fallbacks)
+    let cityAreas = {
+        "Bangalore": ["BTM", "Basavanagudi", "Bellandur", "Domlur", "Electronic City", "HSR Layout", "Indiranagar", "Koramangala", "Malleshwaram", "Marathahalli", "Sarjapur Road", "Whitefield"],
+        "Hyderabad": ["Bachupally", "Madhapur", "Miyapur", "Suchitra", "Gachibowli", "Kondapur", "Jubilee Hills", "Banjara Hills"],
+        "Delhi": ["Connaught Place", "Saket", "Rajouri Garden", "Karol Bagh", "Hauz Khas", "Greater Kailash", "Chandni Chowk"],
+        "Mumbai": ["Bandra", "Andheri", "Colaba", "Juhu", "Powai", "Lower Parel", "Borivali"],
+        "Kolkata": ["Salt Lake", "Park Street", "Gariahat", "New Town", "Ballygunge"],
+        "Chennai": ["Adyar", "Nungambakkam", "T. Nagar", "Velachery", "Mylapore", "Anna Nagar"],
+        "Pune": ["Koregaon Park", "Kothrud", "Hinjewadi", "Viman Nagar", "Baner"]
+    };
 
-    async function loadUniqueLocations() {
+    async function loadCityAreas() {
         try {
-            const response = await fetch("/locations");
+            const response = await fetch("/city-areas");
             if (response.ok) {
-                const locations = await response.json();
-                if (Array.isArray(locations) && locations.length > 0) {
-                    popularLocations = locations;
+                const data = await response.json();
+                if (data && typeof data === "object" && Object.keys(data).length > 0) {
+                    cityAreas = data;
                 }
             }
         } catch (error) {
-            console.warn("Failed to load dynamic location list, falling back to static cities:", error);
+            console.warn("Failed to load dynamic city-area list, falling back to static:", error);
         }
-        populateLocationSelect();
+        populateCitySelect();
     }
 
-    function populateLocationSelect() {
-        locationInput.innerHTML = '<option value="" disabled selected>Select a location...</option>';
-        popularLocations.forEach(loc => {
+    function populateCitySelect() {
+        cityInput.innerHTML = '<option value="" disabled selected>Select a city...</option>';
+        Object.keys(cityAreas).sort().forEach(city => {
             const opt = document.createElement("option");
-            opt.value = loc;
-            opt.textContent = loc;
-            locationInput.appendChild(opt);
+            opt.value = city;
+            opt.textContent = city;
+            cityInput.appendChild(opt);
         });
     }
-    loadUniqueLocations();
+
+    cityInput.addEventListener("change", () => {
+        const selectedCity = cityInput.value;
+        if (!selectedCity) return;
+
+        locationInput.innerHTML = '';
+        locationInput.disabled = false;
+
+        // Default: search the entire city
+        const defaultOpt = document.createElement("option");
+        defaultOpt.value = selectedCity;
+        defaultOpt.textContent = `All Areas (Entire ${selectedCity})`;
+        defaultOpt.selected = true;
+        locationInput.appendChild(defaultOpt);
+
+        const areas = cityAreas[selectedCity] || [];
+        areas.forEach(area => {
+            const opt = document.createElement("option");
+            opt.value = area;
+            opt.textContent = area;
+            locationInput.appendChild(opt);
+        });
+    });
+
+    loadCityAreas();
 
     // Setup Rating Slider Feedback
     ratingInput.addEventListener("input", (e) => {
@@ -108,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = card.getAttribute("data-preset");
             const config = presets[id];
             if (config) {
+                cityInput.value = config.location;
+                cityInput.dispatchEvent(new Event("change"));
                 locationInput.value = config.location;
                 document.querySelector(`input[name="budget"][value="${config.budget}"]`).checked = true;
                 cuisineInput.value = config.cuisine;
@@ -124,6 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Form Reset Handles
     function clearForm() {
         form.reset();
+        locationInput.disabled = true;
+        locationInput.innerHTML = '<option value="" disabled selected>Select a city first...</option>';
         ratingVal.textContent = "4.0";
         hideResultsAndStates();
         presetsPanel.classList.remove("hidden");

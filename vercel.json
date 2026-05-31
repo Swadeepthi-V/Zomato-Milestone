@@ -12,6 +12,10 @@
       "destination": "https://web-production-adf54.up.railway.app/locations"
     },
     {
+      "source": "/city-areas",
+      "destination": "https://web-production-adf54.up.railway.app/city-areas"
+    },
+    {
       "source": "/health",
       "destination": "https://web-production-adf54.up.railway.app/health"
     },

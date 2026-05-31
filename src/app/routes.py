@@ -65,6 +65,17 @@ def get_locations(request: Request) -> list[str]:
     return state.store.unique_locations
 
 
+@router.get("/city-areas", response_model=dict[str, list[str]])
+def get_city_areas(request: Request) -> dict[str, list[str]]:
+    state = _get_state(request)
+    if not state.is_ready or state.store is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Service unavailable: dataset not loaded",
+        )
+    return state.store.city_areas
+
+
 @router.post("/recommend", response_model=RecommendationResponse)
 def recommend(request: Request, body: RecommendRequest) -> RecommendationResponse:
     state = _get_state(request)

@@ -38,10 +38,19 @@ class RestaurantStore:
         self._city_lowers = {}
         self._area_lowers = {}
         self._cuisine_lowers = {}
+        self.city_areas = {}
         for r in restaurants:
             if r.location:
                 locs.add(r.location)
                 self._city_lowers[r.id] = r.location.lower()
+                
+                # Setup city_areas dictionary mapping
+                city = r.location
+                if city not in self.city_areas:
+                    self.city_areas[city] = set()
+                area = r.metadata.get("area")
+                if area:
+                    self.city_areas[city].add(area)
             else:
                 self._city_lowers[r.id] = ""
 
@@ -55,6 +64,7 @@ class RestaurantStore:
             self._cuisine_lowers[r.id] = r.cuisine.lower()
 
         self.unique_locations = sorted(list(locs))
+        self.city_areas = {c: sorted(list(a)) for c, a in self.city_areas.items()}
 
     @property
     def record_count(self) -> int:
