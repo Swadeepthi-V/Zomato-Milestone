@@ -130,6 +130,12 @@ def extract_json(raw: str) -> dict[str, Any]:
     match = _FENCE_PATTERN.search(text)
     if match:
         text = match.group(1).strip()
+    else:
+        # Locate the first '{' and last '}' to extract raw JSON block in case LLM added conversational text
+        start = text.find("{")
+        end = text.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            text = text[start:end+1].strip()
 
     try:
         data = json.loads(text)

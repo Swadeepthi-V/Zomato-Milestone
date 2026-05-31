@@ -11,7 +11,12 @@ from src.llm.engine import RecommendationEngine
 from src.llm.response_parser import LLMResponseError
 from src.logging_config import setup_logging
 from src.models.preferences import UserPreferences
-from src.models.recommendation import RecommendationResponse, ResponseMeta
+from src.models.recommendation import (
+    Recommendation,
+    RecommendationResponse,
+    RecommendationRestaurant,
+    ResponseMeta,
+)
 from src.store.restaurant_store import RestaurantStore
 
 logger = setup_logging(__name__)
@@ -81,11 +86,40 @@ class RecommendationService:
         try:
             engine = self._engine_for(candidates, k)
             response = engine.rank_and_explain(preferences, candidates, top_k=k)
-        except LLMResponseError:
-            raise
         except Exception as exc:
-            logger.exception("Recommendation pipeline failed")
-            raise
+            logger.warning("Recommendation pipeline encountered an error: %s. Falling back to deterministic ranking.", exc)
+            
+            # Sort candidates by rating descending (safety-cast ratings)
+            ranked_candidates = sorted(
+                candidates,
+                key=lambda r: r.rating if r.rating is not None else 0.0,
+                reverse=True
+            )[:k]
+            
+            recs = []
+            for rank, r in enumerate(ranked_candidates, start=1):
+                cuisine_val = r.cuisine if r.cuisine else "various cuisines"
+                recs.append(
+                    Recommendation(
+                        rank=rank,
+                        restaurant=RecommendationRestaurant.from_restaurant(r),
+                        explanation=f"Highly rated selection in {r.location} specializing in {cuisine_val}. Ranked high based on local reviews. (AI fallback ranking)",
+                    )
+                )
+                
+            total_ms = int((time.perf_counter() - start) * 1000)
+            return RecommendationResponse(
+                summary="Here are the top-rated dining options matching your filters.",
+                recommendations=recs,
+                meta=ResponseMeta(
+                    candidate_count=candidate_count,
+                    model="Deterministic Fallback Engine (LLM offline)",
+                    latency_ms=total_ms,
+                    llm_called=False,
+                    hallucination_count=0,
+                    parse_retries=0
+                )
+            )
 
         total_ms = int((time.perf_counter() - start) * 1000)
         updated_meta = response.meta.model_copy(
