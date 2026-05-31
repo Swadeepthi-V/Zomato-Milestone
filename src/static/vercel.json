@@ -14,10 +14,6 @@
     {
       "source": "/health",
       "destination": "https://web-production-adf54.up.railway.app/health"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/src/static/$1"
     }
   ]
 }
